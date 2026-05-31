@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat App</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+    <h1>💬 Chat App</h1>
+    <p class="subtitle">Room banao ya join karo</p>
+
+    <!-- Username -->
+    <div class="input-group">
+      <label>Tera Naam</label>
+      <input type="text" id="username" placeholder="jaise: Nand" maxlength="20" />
+    </div>
+
+    <!-- Room ID -->
+    <div class="input-group">
+      <label>Room ID</label>
+      <input type="text" id="roomId" placeholder="jaise: room123" maxlength="20" />
+    </div>
+
+    <!-- Password -->
+    <div class="input-group">
+      <label>Password</label>
+      <input type="password" id="password" placeholder="room ka password" maxlength="20" />
+    </div>
+
+    <!-- Error message -->
+    <p class="error" id="error"></p>
+
+    <!-- Buttons -->
+    <div class="buttons">
+      <button id="createBtn">🏠 Room Banao</button>
+      <button id="joinBtn" class="secondary">🚪 Room Join Karo</button>
+    </div>
+
+  </div>
+
+  <!-- Socket.io client library — server khud deta hai ye -->
+  <script src="/socket.io/socket.io.js"></script>
+
+  <script>
+    const socket = io(); // Server se connect karo
+
+    const usernameInput = document.getElementById('username');
+    const roomIdInput = document.getElementById('roomId');
+    const passwordInput = document.getElementById('password');
+    const errorEl = document.getElementById('error');
+    const createBtn = document.getElementById('createBtn');
+    const joinBtn = document.getElementById('joinBtn');
+
+    // Error dikhao
+    function showError(msg) {
+      errorEl.textContent = msg;
+    }
+
+    // Fields validate karo
+    function getInputs() {
+      const username = usernameInput.value.trim();
+      const roomId = roomIdInput.value.trim();
+      const password = passwordInput.value.trim();
+
+      if (!username || !roomId || !password) {
+        showError('Saare fields bharo');
+        return null;
+      }
+      return { username, roomId, password };
+    }
+
+    // Room Banao button
+    createBtn.addEventListener('click', () => {
+      const data = getInputs();
+      if (!data) return;
+      socket.emit('create-room', data);
+    });
+
+    // Room Join karo button
+    joinBtn.addEventListener('click', () => {
+      const data = getInputs();
+      if (!data) return;
+      socket.emit('join-room', data);
+    });
+
+    // Server ne bola — room join ho gaya
+    socket.on('room-joined', ({ roomId, username }) => {
+      // Data save karo — chat page pe kaam aayega
+      sessionStorage.setItem('username', username);
+      sessionStorage.setItem('roomId', roomId);
+
+      // Chat page pe bhejo
+      window.location.href = '/chat.html';
+    });
+
+    // Server ne bola — koi error hai
+    socket.on('error', (msg) => {
+      showError(msg);
+    });
+  </script>
+
+</body>
+</html>

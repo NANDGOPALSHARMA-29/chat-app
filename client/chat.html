@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Room</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="chat-container">
+
+    <!-- Header -->
+    <div class="chat-header">
+      <h2 id="roomName">Room: ...</h2>
+      <span id="myName">Tu: ...</span>
+    </div>
+
+    <!-- Messages yahan dikhenge -->
+    <div class="messages" id="messages"></div>
+
+    <!-- Message likhne ka area -->
+    <div class="chat-input">
+      <input
+        type="text"
+        id="messageInput"
+        placeholder="Message likho..."
+        maxlength="500"
+        autocomplete="off"
+      />
+      <button id="sendBtn">Send 🚀</button>
+    </div>
+
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="chat.js"></script>
+
+</body>
+</html>
